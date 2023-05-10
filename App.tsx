@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { Provider as PaperProvider } from "react-native-paper";
 import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
@@ -11,17 +11,35 @@ import LeagueTableScreen from "./src/screens/LeagueTableScreen";
 import Icon from "react-native-vector-icons/FontAwesome";
 import LoginScreen from "./src/screens/LoginScreen";
 import SignUpScreen from "./src/screens/SignUpSceen";
-import { AuthProvider } from "./src/contexts/AuthContext";
+import { AuthContext, AuthProvider } from "./src/contexts/AuthContext";
 import { MenuProvider } from "react-native-popup-menu";
 import { StatisticsProvider } from "./src/contexts/StatisticsContext";
 import { GamesHistoryProvider } from "./src/contexts/GamesHistoryContext";
 import { LeagueTableProvider } from "./src/contexts/LeagueTableContext";
+import { getData } from "./src/utils/asyncStorgae";
+import { AuthContextType } from "./src/interfaces/userInterfaces";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function App(): JSX.Element {
   const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
+  const { setUser } = useContext<AuthContextType>(AuthContext);
+
+  const checkIfUserIsLoggedIn = async () => {
+    const user = await getData("user");
+    if (user) {
+      setUserLoggedIn(true);
+      setUser(user);
+      return true;
+    } else return false;
+  };
+
+  useLayoutEffect(() => {
+    // check if user is logged in
+    checkIfUserIsLoggedIn().then(() => console.log("checked if user is logged in"));
+  }, []);
+
   const LoggedInApp = () => {
     return (
       <Tab.Navigator

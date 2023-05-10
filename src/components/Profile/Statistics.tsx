@@ -13,7 +13,7 @@ const Statistics = () => {
   useEffect(() => {
     setWinRate(calcWinRate());
   }, [matches, wins, losses]);
-  
+
   const calcWinRate = (): number => {
     if (matches === 0) return 0;
     return parseFloat(Math.abs((wins / matches) * 100).toFixed(2));
@@ -22,6 +22,10 @@ const Statistics = () => {
   const userContext = useContext<AuthContextType>(AuthContext);
   const fetchStatistics = async () => {
     const stats: StatisticsResponse = await getStatistics(userContext.user?.id);
+
+    console.log("stats ::");
+    console.log(stats);
+    
     setWins(stats.wins || 0);
     setLosses(stats.losses || 0);
     setMatches(stats.wins + stats.losses || 0);

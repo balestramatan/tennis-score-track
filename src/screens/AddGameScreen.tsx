@@ -41,8 +41,6 @@ const AddGameScreen = () => {
   const [citySelection, setCitySelection] = useState<string>("");
   const [errors, setErrors] = useState<boolean>(false);
 
-  const navigate = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-
   let selectsList: ISelect[] = [];
 
   for (let i = 0; i < parseInt(gamesCountSelection); i++) {
@@ -146,7 +144,7 @@ const AddGameScreen = () => {
 
     try {
       await updateStatistics(winner_id);
-      await updateGameHistory(data.game, data.matches);
+      await updateGameHistory(data?.game, data?.matches);
       await updateLeagueTable(winner_id, looser_id);
 
       alert("Game uploaded successfully");
@@ -163,9 +161,6 @@ const AddGameScreen = () => {
   };
 
   const updateGameHistory = async (game: IGame, matches: MatchesSelection[]) => {
-    console.log("game.matches ::");
-    console.log(game.matches);
-
     let gameToAdd: IGame = {
       id: game.id,
       player1_id: game.player1_id,

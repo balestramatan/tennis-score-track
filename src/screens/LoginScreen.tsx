@@ -13,6 +13,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { login } from "../fetchers/userFetchers";
 import { AuthContext } from "../contexts/AuthContext";
 import { AuthContextType } from "../interfaces/userInterfaces";
+import { storeData } from "../utils/asyncStorgae";
 
 const LoginScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -41,6 +42,7 @@ const LoginScreen = () => {
     setLoading(true);
     try {
       const user = await login(phoneNumber, password);
+      await storeData("user", user);
       setUser(user);
       navigate.replace("LoggedInApp");
     } catch (error: any) {

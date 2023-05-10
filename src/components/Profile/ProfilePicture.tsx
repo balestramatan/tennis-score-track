@@ -16,7 +16,7 @@ import {
   MenuTrigger
 } from "react-native-popup-menu";
 import Divider from "../Shared/Divider";
-import { getData, storeData } from "../../utils/imageUtils";
+import { getData, storeData } from "../../utils/asyncStorgae";
 
 const ProfilePicture = () => {
   const [savedImageURL, setSavedImageURL] = useState<any>(false);

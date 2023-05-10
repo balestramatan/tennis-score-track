@@ -10,9 +10,6 @@ const GamesHistoryScreen = () => {
   const { games, setGames } = useContext(GamesHistoryContext);
   const fetchGamesHistory = async () => {
     const games = await fetchUserGames(user?.id);
-
-    console.log("games[0].matches ::");
-    console.log(games[0].matches);
     setGames(games);
   };
 
