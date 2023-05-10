@@ -1,0 +1,6 @@
+module Pods_tennis_score_track {
+  umbrella header "Pods-tennis_score_track-umbrella.h"
+
+  export *
+  module * { export * }
+}
