@@ -18,6 +18,7 @@ import { GamesHistoryProvider } from "./src/contexts/GamesHistoryContext";
 import { LeagueTableProvider } from "./src/contexts/LeagueTableContext";
 import { getData } from "./src/utils/asyncStorgae";
 import { AuthContextType } from "./src/interfaces/userInterfaces";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -28,6 +29,8 @@ function App(): JSX.Element {
 
   const checkIfUserIsLoggedIn = async () => {
     const user = await getData("user");
+    console.log("user ::");
+    console.log(user);
     if (user) {
       setUserLoggedIn(true);
       setUser(user);
