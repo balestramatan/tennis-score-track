@@ -146,7 +146,7 @@ const AddGameScreen = () => {
 
     try {
       await updateStatistics(winner_id);
-      await updateGameHistory(data.game);
+      await updateGameHistory(data.game, data.matches);
       await updateLeagueTable(winner_id, looser_id);
 
       alert("Game uploaded successfully");
@@ -162,7 +162,10 @@ const AddGameScreen = () => {
     await setMatches(matches + 1);
   };
 
-  const updateGameHistory = async (game: IGame) => {
+  const updateGameHistory = async (game: IGame, matches: MatchesSelection[]) => {
+    console.log("game.matches ::");
+    console.log(game.matches);
+
     let gameToAdd: IGame = {
       id: game.id,
       player1_id: game.player1_id,
@@ -173,8 +176,9 @@ const AddGameScreen = () => {
       winner_name: game.winner_id === player1_id ? player1Selection : player2Selection,
       date: new Date().toISOString().split("T")[0],
       location: game.location.trim(),
-      matches: game.matches
+      matches
     };
+
     await setGames([...games, gameToAdd]);
   };
 
