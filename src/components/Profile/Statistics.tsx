@@ -6,9 +6,12 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { AuthContextType } from "../../interfaces/userInterfaces";
 import { StatisticsResponse } from "../../infrastructure/Responses.interface";
 import { StatisticsContext } from "../../contexts/StatisticsContext";
+import { ActivityIndicator } from "react-native-paper";
 
 const Statistics = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { matches, wins, losses, setWins, setMatches, winRate, setWinRate, setLosses } = useContext(StatisticsContext);
+  const { user } = useContext<AuthContextType>(AuthContext);
 
   useEffect(() => {
     setWinRate(calcWinRate());
@@ -19,21 +22,26 @@ const Statistics = () => {
     return parseFloat(Math.abs((wins / matches) * 100).toFixed(2));
   };
 
-  const userContext = useContext<AuthContextType>(AuthContext);
   const fetchStatistics = async () => {
-    const stats: StatisticsResponse = await getStatistics(userContext.user?.id);
-
-    console.log("stats ::");
-    console.log(stats);
-    
+    setIsLoading(true);
+    const stats: StatisticsResponse = await getStatistics(user?.id);
     setWins(stats.wins || 0);
     setLosses(stats.losses || 0);
     setMatches(stats.wins + stats.losses || 0);
+    setIsLoading(false);
   };
 
   useEffect(() => {
     fetchStatistics().then(() => console.log("statistics fetched"));
   }, []);
+
+  if (isLoading) {
+    return (
+      <View style={statisticsStyle.loadingContainer}>
+        <ActivityIndicator style={{ alignSelf: "center" }} size="large" color="#96c482" />
+      </View>
+    );
+  }
 
   return (
     <View style={statisticsStyle.container}>
@@ -61,12 +69,9 @@ const Statistics = () => {
 };
 
 const statisticsStyle = StyleSheet.create({
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    marginTop: 10
+  container: {},
+  loadingContainer: {
+    marginTop: 100
   },
   individualStatsContainer: {
     display: "flex",

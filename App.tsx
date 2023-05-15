@@ -1,141 +1,34 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
+import React from "react";
 import { Provider as PaperProvider } from "react-native-paper";
 import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "./src/screens/HomeScreen";
-import GamesHistoryScreen from "./src/screens/GamesHistory";
-import AddGameScreen from "./src/screens/AddGameScreen";
-import LeagueTableScreen from "./src/screens/LeagueTableScreen";
-import Icon from "react-native-vector-icons/FontAwesome";
-import LoginScreen from "./src/screens/LoginScreen";
-import SignUpScreen from "./src/screens/SignUpSceen";
-import { AuthContext, AuthProvider } from "./src/contexts/AuthContext";
+import { AuthProvider } from "./src/contexts/AuthContext";
 import { MenuProvider } from "react-native-popup-menu";
 import { StatisticsProvider } from "./src/contexts/StatisticsContext";
 import { GamesHistoryProvider } from "./src/contexts/GamesHistoryContext";
 import { LeagueTableProvider } from "./src/contexts/LeagueTableContext";
-import { getData } from "./src/utils/asyncStorgae";
-import { AuthContextType } from "./src/interfaces/userInterfaces";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+import AppNavigator from "./src/navigation/AppNavigator";
 
 function App(): JSX.Element {
-  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
-  const { setUser } = useContext<AuthContextType>(AuthContext);
-
-  const checkIfUserIsLoggedIn = async () => {
-    const user = await getData("user");
-    console.log("user ::");
-    console.log(user);
-    if (user) {
-      setUserLoggedIn(true);
-      setUser(user);
-      return true;
-    } else return false;
-  };
-
-  useLayoutEffect(() => {
-    // check if user is logged in
-    checkIfUserIsLoggedIn().then(() => console.log("checked if user is logged in"));
-  }, []);
-
-  const LoggedInApp = () => {
-    return (
-      <Tab.Navigator
-        screenOptions={{
-          headerShown: false,
-          tabBarActiveTintColor: "#84B117",
-          tabBarInactiveTintColor: "grey",
-          tabBarStyle: {
-            minHeight: 60,
-            backgroundColor: "white",
-            padding: 5
-          }
-        }}
-      >
-        <Tab.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            tabBarLabel: "Home",
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="home" color={color} size={size} />
-            )
-          }}
-        />
-        <Tab.Screen
-          name="GamesHistory"
-          component={GamesHistoryScreen}
-          options={{
-            tabBarLabel: "Games History",
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="history" color={color} size={size} />
-            )
-          }}
-        />
-        <Tab.Screen
-          name="LeagueTable"
-          component={LeagueTableScreen}
-          options={{
-            tabBarLabel: "League Table",
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="table" color={color} size={size} />
-            )
-          }}
-        />
-        <Tab.Screen
-          name="AddGame"
-          component={AddGameScreen}
-          options={{
-            tabBarLabel: "Add Game",
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="plus" color={color} size={size} />
-            )
-          }}
-        />
-      </Tab.Navigator>
-    );
-  };
-  const app = () => {
-    return (
+  return (
+    <AuthProvider>
       <MenuProvider>
-        <AuthProvider>
-          <StatisticsProvider>
-            <GamesHistoryProvider>
-              <LeagueTableProvider>
-                <NativeBaseProvider>
-                  <NavigationContainer>
-                    <PaperProvider>
-                      {userLoggedIn ? (
-                        <Stack.Navigator screenOptions={{
-                          headerShown: false
-                        }}>
-                          <Stack.Screen name="LoggedInApp" component={LoggedInApp} />
-                        </Stack.Navigator>
-                      ) : (
-                        <Stack.Navigator screenOptions={{
-                          headerShown: false
-                        }}>
-                          <Stack.Screen name="Login" component={LoginScreen} />
-                          <Stack.Screen name="SignUp" component={SignUpScreen} />
-                          <Stack.Screen name="LoggedInApp" component={LoggedInApp} />
-                        </Stack.Navigator>
-                      )}
-                    </PaperProvider>
-                  </NavigationContainer>
-                </NativeBaseProvider>
-              </LeagueTableProvider>
-            </GamesHistoryProvider>
-          </StatisticsProvider>
-        </AuthProvider>
+        <StatisticsProvider>
+          <GamesHistoryProvider>
+            <LeagueTableProvider>
+              <NativeBaseProvider>
+                <NavigationContainer>
+                  <PaperProvider>
+                    <AppNavigator />
+                  </PaperProvider>
+                </NavigationContainer>
+              </NativeBaseProvider>
+            </LeagueTableProvider>
+          </GamesHistoryProvider>
+        </StatisticsProvider>
       </MenuProvider>
-    );
-  };
-  return app();
+    </AuthProvider>
+  );
 }
 
 export default App;

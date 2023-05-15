@@ -13,6 +13,11 @@ export interface User {
 export interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
+  isLoading: boolean;
+  setIsLoading: (bool: boolean) => void;
+  userLogin: (user: User) => void;
+  userLogout: () => void;
+  isLoggedIn: () => void;
 }
 
 export interface StatisticsContextType {

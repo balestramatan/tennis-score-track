@@ -50,6 +50,7 @@ const AddGameScreen = () => {
     });
   }
   const _getAllPlayers = async () => {
+    setIsLoading(true);
     try {
       let playersOptions: ISelect[] = [];
       const players = await getAllUsers();
@@ -60,11 +61,11 @@ const AddGameScreen = () => {
           value: player.first_name + " " + player.last_name
         });
       });
-
       setPlayersOptions(playersOptions);
     } catch (error) {
       console.log("error ::", error);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {

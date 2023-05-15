@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 
-import { DataTable } from "react-native-paper";
+import { ActivityIndicator, DataTable } from "react-native-paper";
 import { fetchLeagueTableStats } from "../fetchers/leaugeTableFetchers";
 import {
   PlayerStatsResponse
@@ -9,8 +9,10 @@ import {
 import { LeagueTableContext } from "../contexts/LeagueTableContext";
 
 const LeagueTableScreen = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { leagueTableStats, setLeagueTableStats } = useContext(LeagueTableContext);
   const _fetchLeagueTableStats = async () => {
+    setIsLoading(true);
     try {
       const leagueTableStats: PlayerStatsResponse[] = await fetchLeagueTableStats();
       leagueTableStats.sort((a, b) => {
@@ -23,11 +25,21 @@ const LeagueTableScreen = () => {
     } catch (error) {
       console.log("error ::", error);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     _fetchLeagueTableStats().then(() => console.log("fetched table data..."));
   }, []);
+
+  if (isLoading) {
+    return (
+      <View style={leagueStyles.loadingContainer}>
+        <ActivityIndicator size="large" color="#96c482" />
+      </View>
+    );
+  }
+
   return (
     <View style={leagueStyles.container}>
       <View style={leagueStyles.titleCon}>
@@ -65,6 +77,12 @@ const leagueStyles = StyleSheet.create({
   container: {
     display: "flex",
     marginTop: 50
+  },
+  loadingContainer: {
+    display: "flex",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
   },
   titleCon: {
     display: "flex",
